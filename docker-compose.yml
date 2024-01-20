@@ -2,6 +2,10 @@ version: '3.8'
 
 services:
 
+  redis:
+    container_name: redis
+    image: redis:7.2-alpine
+
   django:
     container_name: django
     build:
@@ -15,3 +19,19 @@ services:
       - DEBUG=True
       - SECRET_KEY=sua chave aqui
       - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - redis
+
+  celery:
+    container_name: celery
+    build:
+      context: ./dcelery
+    command: celery --app=dcelery worker -l INFO
+    volumes:
+      - ./dcelery:/usr/src/app/
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=sua chave aqui
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - redis
