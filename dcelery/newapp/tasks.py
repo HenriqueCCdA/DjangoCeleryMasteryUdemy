@@ -1,6 +1,9 @@
-# from celery import shared_task
-# import time
+from celery import shared_task
+from django.core.management import call_command
 
+@shared_task
+def management_command(queue="tasks"):
+    call_command("test_command")
 
 # @shared_task
 # def task1():

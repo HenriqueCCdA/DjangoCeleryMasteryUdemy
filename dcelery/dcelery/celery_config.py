@@ -17,6 +17,9 @@ app.conf.task_queues = [
         routing_key='tasks',
         queue_arguments={'x-max-priority': 10}
     ),
+    Queue(
+        'dead_letter', routing_key='dead_letter'
+    ),
 ]
 
 app.conf.task_acks_late = True
@@ -40,7 +43,9 @@ if os.path.exists(task_folder) and os.path.isdir(task_folder):
                 if callable(obj) and name.startswith('my_task'):
                     task_modules.append(f'{module_name}.{name}')
 
-app.autodiscover_tasks(task_modules)
+    app.autodiscover_tasks(task_modules)
+
+app.autodiscover_tasks()
 
 # @app.task(queue='tasks')
 # def t1(a, b, message=None):
